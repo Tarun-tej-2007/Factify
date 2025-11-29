@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Factify - Website Verifier",
+  "version": "1.0.0",
+  "description": "Verify website safety and detect fake content with AI-powered analysis",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "icons": {
+    "16": "icons/icon-16.png.jpg",
+    "48": "icons/icon-48.png.jpg",
+    "128": "icons/icon-128.png.jpg"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon-16.png.jpg",
+      "48": "icons/icon-48.png.jpg",
+      "128": "icons/icon-128.png.jpg"
+    },
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://*.googleapis.com https://www.virustotal.com https://api.groq.com https://api-inference.huggingface.co"
+  }
+}

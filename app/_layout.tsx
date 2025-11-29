@@ -16,28 +16,46 @@ function RootLayoutNav() {
 
   useEffect(() => {
     const handleInitialURL = async () => {
-      const initialUrl = await Linking.getInitialURL();
-      if (initialUrl) {
-        handleIncomingURL(initialUrl);
+      try {
+        const initialUrl = await Linking.getInitialURL();
+        console.log('[Linking] Initial URL:', initialUrl);
+        if (initialUrl) {
+          handleIncomingURL(initialUrl);
+        }
+      } catch (error) {
+        console.error('[Linking] Error getting initial URL:', error);
       }
     };
 
     const handleIncomingURL = async (url: string) => {
-      const parsed = Linking.parse(url);
-      const fullUrl = parsed.queryParams?.url as string;
-
-      if (fullUrl && (fullUrl.startsWith("http://") || fullUrl.startsWith("https://"))) {
-        try {
-          await runVerification(fullUrl, "link");
-        } catch (error) {
-          console.error("[Linking] Error verifying URL:", error);
+      console.log('[Linking] Handling URL:', url);
+      
+      try {
+        // Handle direct http/https URLs (when app is set as default browser)
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+          console.log('[Linking] Direct web URL detected:', url);
+          await runVerification(url, "link");
+          return;
         }
+
+        // Handle factify:// scheme URLs
+        const parsed = Linking.parse(url);
+        console.log('[Linking] Parsed URL:', parsed);
+        
+        const fullUrl = parsed.queryParams?.url as string;
+        if (fullUrl && (fullUrl.startsWith("http://") || fullUrl.startsWith("https://"))) {
+          console.log('[Linking] Factify scheme URL with web link:', fullUrl);
+          await runVerification(fullUrl, "link");
+        }
+      } catch (error) {
+        console.error("[Linking] Error handling URL:", error);
       }
     };
 
     handleInitialURL();
 
     const subscription = Linking.addEventListener("url", (event) => {
+      console.log('[Linking] URL event received:', event.url);
       handleIncomingURL(event.url);
     });
 

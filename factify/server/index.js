@@ -218,6 +218,11 @@ Do not include any text besides the JSON object.`;
   }
 });
 
+// Health check for quick connectivity tests from device/emulator
+app.get("/", (req, res) => {
+  res.json({ ok: true, message: "Factify proxy running" });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Proxy Server Running on http://localhost:${PORT}`);

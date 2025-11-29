@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factify - Website Verifier</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <img src="https://i.postimg.cc/JhjJ7MBB/Whats-App-Image-2025-11-28-at-17-00-19-4c028f36.jpg" 
+             alt="Factify Logo" 
+             style="width: 40px; height: 40px; object-fit: contain; margin-right: 10px;">
+        <h1>Factify</h1>
+      </div>
+      <p class="tagline">AI-Powered Fact Checker</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="website">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Website
+      </button>
+      <button class="tab-btn" data-tab="news">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        News
+      </button>
+      <button class="tab-btn" data-tab="media">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Media
+      </button>
+    </div>
+
+    <!-- Website Tab Content -->
+    <div id="website-tab" class="tab-content active">
+    <!-- Loading State -->
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Analyzing website...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="error hidden">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+        <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3>Unable to Verify</h3>
+      <p id="error-message"></p>
+      <button id="retry-btn" class="btn btn-primary">Try Again</button>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="results hidden">
+      <!-- Status Badge -->
+      <div id="status-badge" class="status-badge">
+        <div class="status-icon"></div>
+        <div class="status-text">
+          <h2 id="status-title">Safe Website</h2>
+          <p id="status-subtitle">No threats detected</p>
+        </div>
+      </div>
+
+      <!-- Confidence Score -->
+      <div class="confidence-section">
+        <div class="confidence-label">
+          <span>Confidence Score</span>
+          <span id="confidence-value" class="confidence-value">95%</span>
+        </div>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Website Info -->
+      <div class="info-section">
+        <h3>Website Information</h3>
+        <div class="info-item">
+          <span class="info-label">URL:</span>
+          <span id="website-url" class="info-value"></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Domain:</span>
+          <span id="website-domain" class="info-value"></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Protocol:</span>
+          <span id="website-protocol" class="info-value"></span>
+        </div>
+      </div>
+
+      <!-- Analysis Details -->
+      <div class="details-section">
+        <h3>Analysis Details</h3>
+        <div id="analysis-details" class="details-content"></div>
+      </div>
+
+      <!-- Threats Found (if any) -->
+      <div id="threats-section" class="threats-section hidden">
+        <h3>⚠️ Potential Threats</h3>
+        <ul id="threats-list" class="threats-list"></ul>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button id="view-full-report" class="btn btn-secondary">
+          View Full Report
+        </button>
+        <button id="report-issue" class="btn btn-outline">
+          Report Issue
+        </button>
+      </div>
+    </div>
+    </div>
+
+    <!-- News Tab Content -->
+    <div id="news-tab" class="tab-content hidden">
+      <div class="input-section">
+        <label>Enter news article or headline:</label>
+        <textarea id="news-input" placeholder="Paste news text or URL here..." rows="4"></textarea>
+        <button id="check-news-btn" class="btn btn-primary">Check News</button>
+      </div>
+      <div id="news-loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Analyzing news...</p>
+      </div>
+      <div id="news-results" class="results hidden"></div>
+    </div>
+
+    <!-- Media Tab Content -->
+    <div id="media-tab" class="tab-content hidden">
+      <div class="input-section">
+        <label>Upload image or video:</label>
+        <input type="file" id="media-input" accept="image/*,video/*" />
+        <button id="check-media-btn" class="btn btn-primary">Check Media</button>
+      </div>
+      <div id="media-preview" class="media-preview hidden"></div>
+      <div id="media-loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Analyzing media...</p>
+      </div>
+      <div id="media-results" class="results hidden"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Powered by Factify AI</p>
+      <a href="#" id="settings-link">Settings</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

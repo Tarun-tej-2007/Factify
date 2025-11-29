@@ -1,5 +1,6 @@
 // services/verification.ts
 import { z } from "zod";
+import { Platform } from "react-native";
 import type {
   VerificationResponse,
   VerificationStatus,
@@ -7,13 +8,30 @@ import type {
 } from "../types/verification";
 
 /**
- * Client calls a backend proxy that forwards to Gemini.
+ * Client calls a backend proxy that forwards to OpenAI.
  * - For web use:    VERIFICATION_PROXY_URL=http://localhost:3000/api/verify
  * - Android emulator: use http://10.0.2.2:3000/api/verify
  * - Physical device: use http://<your_machine_ip>:3000/api/verify
  */
-const PROXY_URL =
-  process.env.VERIFICATION_PROXY_URL ?? "http://localhost:3000/api/verify";
+
+// Determine the correct proxy URL based on platform
+let PROXY_URL: string = process.env.VERIFICATION_PROXY_URL || "";
+
+if (!PROXY_URL) {
+  if (Platform.OS === "web") {
+    PROXY_URL = "http://localhost:3000/api/verify";
+  } else if (Platform.OS === "android") {
+    // For Android emulator
+    PROXY_URL = "http://10.0.2.2:3000/api/verify";
+    // For physical device, you need to set VERIFICATION_PROXY_URL env var to http://<your_machine_ip>:3000/api/verify
+  } else if (Platform.OS === "ios") {
+    PROXY_URL = "http://localhost:3000/api/verify";
+  } else {
+    PROXY_URL = "http://localhost:3000/api/verify";
+  }
+}
+
+console.log(`[Verification] Using PROXY_URL: ${PROXY_URL}`);
 
 const verificationSchema = z.object({
   status: z.enum(["true", "fake", "unknown"]),
